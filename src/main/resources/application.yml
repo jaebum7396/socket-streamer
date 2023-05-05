@@ -1,0 +1,19 @@
+#port
+server:
+  port: '9090'
+
+spring:
+  profiles:
+    active: local
+  freemarker:
+    suffix: .ftl
+    cache: 'false'
+    template-loader-path: classpath:/templates
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  devtools:
+    restart:
+      enabled: 'false'
+    livereload:
+      enabled: 'false'
