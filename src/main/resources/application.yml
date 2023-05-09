@@ -1,10 +1,10 @@
 #port
 server:
-  port: '9090'
+  port: '7000'
 
 spring:
   profiles:
-    active: local
+    active: alpha
   freemarker:
     suffix: .ftl
     cache: 'false'

@@ -1,6 +1,6 @@
-package chatting.service;
+package socketStreamer.service;
 
-import chatting.model.Chat;
+import socketStreamer.model.Chat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

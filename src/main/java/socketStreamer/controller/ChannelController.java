@@ -1,8 +1,8 @@
-package chatting.controller;
+package socketStreamer.controller;
 
-import chatting.model.Channel;
-import chatting.repository.ChannelRepository;
-import chatting.service.RedisPublishService;
+import socketStreamer.model.Channel;
+import socketStreamer.repository.ChannelRepository;
+import socketStreamer.service.RedisPublishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;

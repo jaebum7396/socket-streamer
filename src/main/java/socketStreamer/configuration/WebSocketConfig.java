@@ -1,7 +1,6 @@
-package chatting.configuration;
+package socketStreamer.configuration;
 
-import chatting.model.MyUserPrincipal;
-import com.fasterxml.jackson.core.type.TypeReference;
+import socketStreamer.model.MyUserPrincipal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,6 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

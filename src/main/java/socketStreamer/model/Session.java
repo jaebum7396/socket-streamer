@@ -1,4 +1,4 @@
-package chatting.model;
+package socketStreamer.model;
 
 import org.springframework.messaging.simp.user.SimpSession;
 import org.springframework.messaging.simp.user.SimpSubscription;

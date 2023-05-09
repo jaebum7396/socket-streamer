@@ -1,7 +1,7 @@
-package chatting.repository;
+package socketStreamer.repository;
 
-import chatting.model.Channel;
-import chatting.service.RedisSubscribeService;
+import socketStreamer.model.Channel;
+import socketStreamer.service.RedisSubscribeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
@@ -56,9 +56,10 @@ public class ChannelRepository {
      * 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
      */
     public void enterChannel(String domainCd, String channelCd) {
-        log.info("enterChannel");
+        log.info("enterChannel : " + domainCd+"-"+channelCd);
         ChannelTopic topic = topics.get(domainCd+"-"+channelCd);
         if (topic == null) {
+            log.info("채널 생성 : " + domainCd+"-"+channelCd);
             topic = new ChannelTopic(domainCd+"-"+channelCd);
             redisMessageListener.addMessageListener(redisSubscribeService, topic);
             topics.put(domainCd+"-"+channelCd, topic);
@@ -66,6 +67,8 @@ public class ChannelRepository {
     }
     public ChannelTopic getTopic(String domainCd, String channelCd) {
         System.out.println("allTopics: " + topics);
+        System.out.println("domainCd: " + domainCd);
+        System.out.println("channelCd: " + channelCd);
         log.info("getTopic: " + topics.get(domainCd+"-"+channelCd).toString());
         return topics.get(domainCd+"-"+channelCd);
     }

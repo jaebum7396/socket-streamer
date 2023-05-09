@@ -1,4 +1,4 @@
-package chatting.model;
+package socketStreamer.model;
 
 import java.security.Principal;
 
