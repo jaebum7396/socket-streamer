@@ -1,4 +1,4 @@
 spring:
   redis:
-    host: 52.79.162.165
-    port: 6379
+    host: ${REDIS_URI}
+    port: ${REDIS_PORT}
