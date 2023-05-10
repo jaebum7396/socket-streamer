@@ -69,6 +69,12 @@ public class ChannelRepository {
         System.out.println("allTopics: " + topics);
         System.out.println("domainCd: " + domainCd);
         System.out.println("channelCd: " + channelCd);
+        if(topics.get(domainCd+"-"+channelCd) == null){
+            log.info("채널 생성 : " + domainCd+"-"+channelCd);
+            ChannelTopic topic = new ChannelTopic(domainCd+"-"+channelCd);
+            redisMessageListener.addMessageListener(redisSubscribeService, topic);
+            topics.put(domainCd+"-"+channelCd, topic);
+        }
         log.info("getTopic: " + topics.get(domainCd+"-"+channelCd).toString());
         return topics.get(domainCd+"-"+channelCd);
     }
