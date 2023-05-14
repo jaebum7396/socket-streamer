@@ -55,21 +55,23 @@ public class ChannelRepository {
     /**
      * 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
      */
-    public void enterChannel(String domainCd, String channelCd) {
-        log.info("enterChannel : " + domainCd+"-"+channelCd);
-        ChannelTopic topic = topics.get(domainCd+"-"+channelCd);
+    public void enterTopic(String domainCd) {
+        log.info("enterTopic : " + domainCd);
+        ChannelTopic topic = topics.get(domainCd);
         if (topic == null) {
-            log.info("채널 생성 : " + domainCd+"-"+channelCd);
-            topic = new ChannelTopic(domainCd+"-"+channelCd);
+            log.info("토픽 생성 : " + domainCd);
+            topic = new ChannelTopic(domainCd);
             redisMessageListener.addMessageListener(redisSubscribeService, topic);
-            topics.put(domainCd+"-"+channelCd, topic);
+            topics.put(domainCd, topic);
         }
     }
-    public ChannelTopic getTopic(String domainCd, String channelCd) {
+    public ChannelTopic getTopic(String domainCd) {
         System.out.println("allTopics: " + topics);
         System.out.println("domainCd: " + domainCd);
-        System.out.println("channelCd: " + channelCd);
-        log.info("getTopic: " + topics.get(domainCd+"-"+channelCd).toString());
-        return topics.get(domainCd+"-"+channelCd);
+        if(topics.get(domainCd) == null){
+            enterTopic(domainCd);
+        }
+        log.info("getTopic: " + topics.get(domainCd).toString());
+        return topics.get(domainCd);
     }
 }

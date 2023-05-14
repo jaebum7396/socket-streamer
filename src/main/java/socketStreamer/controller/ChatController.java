@@ -28,7 +28,7 @@ public class ChatController {
             chat.setMessage(chat.getUserCd() + "님이 입장하셨습니다.");
         }*/
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
-        String destination = channelRepository.getTopic(chat.getDomainCd(), chat.getChannelCd()).getTopic();
+        String destination = channelRepository.getTopic(chat.getDomainCd()).getTopic();
         redisPublishService.publish(destination, chat);
     }
 
@@ -36,7 +36,7 @@ public class ChatController {
     public void enter(Chat chat) {
         System.out.println(chat);
         if (chat.getTransferType() == 1) {
-            channelRepository.enterChannel(chat.getDomainCd(), chat.getChannelCd());
+            channelRepository.enterTopic(chat.getDomainCd());
         }
     }
 

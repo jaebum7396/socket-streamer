@@ -2,7 +2,20 @@
 server:
   port: '7000'
 
+cloud:
+  gateway:
+    uri: ${GATEWAY_URI}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${DISCOVERY_URL}
+
 spring:
+  application:
+    name: socket-streamer
   profiles:
     active: alpha
   freemarker:
@@ -17,3 +30,14 @@ spring:
       enabled: 'false'
     livereload:
       enabled: 'false'
+
+#SECRET KEY
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+jasypt:
+  encryptor:
+    password: ${JASYPT_ENCRYPTOR_PASSWORD}
+token:
+  access-expired-time : 3600000
+  refresh-expired-time : 3600000
