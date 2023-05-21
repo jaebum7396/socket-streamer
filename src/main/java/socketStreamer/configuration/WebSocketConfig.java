@@ -50,6 +50,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 List<String> userCdArr = Optional
                         .ofNullable(accessor.getNativeHeader("userCd"))
                         .orElseGet(Collections::emptyList);
+
+                List<String> AuthorizationArr = Optional
+                        .ofNullable(accessor.getNativeHeader("Authorization"))
+                        .orElseGet(Collections::emptyList);
+
+                System.out.println("AuthorizationArr : "+AuthorizationArr);
                 try{
                     // 처음 접속 시도시 유저 데이터를 넣어준다.
                     if (StompCommand.CONNECT.equals(accessor.getCommand())&&userCdArr.size()>0) {
@@ -62,24 +68,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         //principal 만들어준다 -- 해당 부분은 spring security를 사용하지 않을 경우이기 때문에 추후에 변경될 수 있음
                         Principal principal = new MyUserPrincipal(userCd);
                         accessor.setUser(principal);
-
-                        // -- 이하 레디스에서 사용자 정보를 보관할 필요가 있는지 고려
-
-                        // userSession redis 조회
-                        //Object userSessionObj = redisTemplate.opsForValue().get(userCd);
-                        //if (userSessionObj != null) {
-                        //    // 조회한 value를 역질렬화한다
-                        //    userSessions = objectMapper.readValue(
-                        //            String.valueOf(userSessionObj)
-                        //            , new TypeReference<ArrayList<String>>() {});
-                        //    // 값이 있으면 해당 값에 userSession를 추가하여 Redis에 저장
-                        //    userSessions.add(userSession);
-                        //} else {
-                        //    // 값이 없으면 새로 생성하여 Redis에 저장
-                        //    userSessions = Collections.singletonList(userSession);
-                        //}
-                        //redisTemplate.opsForValue().set(userCd, objectMapper.writeValueAsString(userSessions));
-                        //System.out.println(" **************** [접속]현재 사용자("+userCd+")"+"에 할당되어 있는 Sessions : "+redisTemplate.opsForValue().get(userCd).toString()+" **************** ");
                     }
 
                     // 사용자 접속 해제시 사용자 큐를 삭제한다.
@@ -89,26 +77,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         // 현재 접속한 세션을 가져온다.
                         String userSession = accessor.getSessionId();
                         System.out.println("접속 해제 요청- [userCd : "+ userCd+"] [sessionId : "+userSession+"]");
-
-                        // -- 이하 레디스에서 사용자 정보를 보관할 필요가 있는지 고려
-                        // userSession redis 조회
-                        //Object userSessionObj = redisTemplate.opsForValue().get(userCd);
-                        //if (userSessionObj != null) {
-                        //    // 조회한 value를 역질렬화한다
-                        //    userSessions = objectMapper.readValue(
-                        //            String.valueOf(userSessionObj)
-                        //            , new TypeReference<ArrayList<String>>() {});
-                        //    userSessions.remove(accessor.getSessionId());
-                        //    // 남아 있는 세션이 없다면
-                        //    if(userSessions.size() == 0){
-                        //        // 레디스에서 해당 유저를 지운다
-                        //        //redisTemplate.delete(userCd);
-                        //    }else{
-                        //        // 있다면 해당 유저의 세션을 업데이트한다.
-                        //        //redisTemplate.opsForValue().set(userCd, objectMapper.writeValueAsString(userSessions));
-                        //        //System.out.println(" **************** [접속해제]현재 사용자("+userCd+")"+"에 할당되어 있는 Sessions : "+redisTemplate.opsForValue().get(userCd).toString()+" **************** ");
-                        //    }
-                        //}
                     }
                 }catch(Exception e){
                     e.printStackTrace();
