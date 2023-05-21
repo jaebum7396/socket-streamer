@@ -1,5 +1,9 @@
 package socketStreamer.configuration;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import socketStreamer.model.MyUserPrincipal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,9 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +33,16 @@ import java.util.Optional;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Autowired private RedisTemplate<String, Object> redisTemplate;
+
+    @Value("${jwt.secret.key}")
+    private String JWT_SECRET_KEY;
+
+    public Claims getClaims(String jwt) {
+        Key secretKey = Keys.hmacShaKeyFor(JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        Claims claim = Jwts.parserBuilder().setSigningKey(secretKey).build()
+                .parseClaimsJws(jwt).getBody();
+        return claim;
+    }
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.setApplicationDestinationPrefixes("/pub");
@@ -58,9 +75,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 System.out.println("AuthorizationArr : "+AuthorizationArr);
                 try{
                     // 처음 접속 시도시 유저 데이터를 넣어준다.
-                    if (StompCommand.CONNECT.equals(accessor.getCommand())&&userCdArr.size()>0) {
+                    if (StompCommand.CONNECT.equals(accessor.getCommand())&&AuthorizationArr.size()>0) {
                         // 현재 접속한 userCd
-                        String userCd = userCdArr.get(0);
+                        String AuthorizationStr = AuthorizationArr.get(0);
+                        Claims claim = getClaims(AuthorizationStr);
+                        String userCd = claim.get("userCd", String.class);
+
                         // 현재 접속한 세션을 가져온다.
                         String userSession = accessor.getSessionId();
                         System.out.println("접속 요청 - [userCd : "+ userCd+"] [sessionId : "+userSession+"]");
