@@ -64,9 +64,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 ObjectMapper objectMapper = new ObjectMapper();
                 List<String> userSessions = null;
                 // 헤더에서 userCd 가져온다.
-                List<String> userCdArr = Optional
-                        .ofNullable(accessor.getNativeHeader("userCd"))
-                        .orElseGet(Collections::emptyList);
+                //List<String> userCdArr = Optional
+                //        .ofNullable(accessor.getNativeHeader("userCd"))
+                //        .orElseGet(Collections::emptyList);
 
                 List<String> AuthorizationArr = Optional
                         .ofNullable(accessor.getNativeHeader("Authorization"))
