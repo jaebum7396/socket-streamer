@@ -1,10 +1,5 @@
-#port
 server:
   port: '7000'
-
-cloud:
-  gateway:
-    uri: ${GATEWAY_URI}
 
 eureka:
   client:
@@ -18,10 +13,9 @@ spring:
     name: socket-streamer
   profiles:
     active: deploy
-  freemarker:
-    suffix: .ftl
-    cache: 'false'
-    template-loader-path: classpath:/templates
+  redis:
+    host: ${REDIS_URI}
+    port: ${REDIS_PORT}
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
