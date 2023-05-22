@@ -17,7 +17,7 @@ spring:
   application:
     name: socket-streamer
   profiles:
-    active: alpha
+    active: deploy
   freemarker:
     suffix: .ftl
     cache: 'false'
