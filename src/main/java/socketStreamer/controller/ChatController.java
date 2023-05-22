@@ -22,11 +22,6 @@ public class ChatController {
     @MessageMapping("/message")
     public void message(Chat chat) {
         System.out.println(chat);
-        //chat.setMessageCd(UUID.randomUUID().toString());
-        /*if (chat.getTransferType() == 1) {
-            channelRepository.enterChannel(chat.getDomainCd(), chat.getChannelCd());
-            chat.setMessage(chat.getUserCd() + "님이 입장하셨습니다.");
-        }*/
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
         String destination = channelRepository.getTopic(chat.getDomainCd()).getTopic();
         redisPublishService.publish(destination, chat);
@@ -39,17 +34,4 @@ public class ChatController {
             channelRepository.enterTopic(chat.getDomainCd());
         }
     }
-
-    /*@EventListener
-    public void handleWebSocketConnectListener(SessionConnectEvent event) {
-        System.out.println("getMessage : "+event.getMessage());
-        String sessionId = event.getMessage().getHeaders().get("simpSessionId").toString();
-        System.out.println("Received a new web socket connection: " + sessionId);
-    }
-
-    @EventListener
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        String sessionId = event.getSessionId();
-        System.out.println("Web socket disconnected: " + sessionId);
-    }*/
 }

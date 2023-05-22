@@ -1,4 +1,0 @@
-spring:
-  redis:
-    host: ${REDIS_URI}
-    port: ${REDIS_PORT}
