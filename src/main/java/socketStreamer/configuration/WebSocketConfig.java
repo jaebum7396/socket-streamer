@@ -69,7 +69,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         .ofNullable(accessor.getNativeHeader("Authorization"))
                         .orElseGet(Collections::emptyList);
 
-                //System.out.println("AuthorizationArr : "+AuthorizationArr);
+                System.out.println("AuthorizationArr : "+AuthorizationArr);
                 try{
                     // 처음 접속 시도시 유저 데이터를 넣어준다.
                     if (StompCommand.CONNECT.equals(accessor.getCommand())&&AuthorizationArr.size()>0) {
