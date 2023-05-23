@@ -87,18 +87,23 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         accessor.setUser(principal);
                     }
 
-                    // 사용자 접속 해제시 사용자 큐를 삭제한다.
-                    if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
-                        if (accessor.getUser() != null) {
-                            // 현재 접속한 userCd
-                            String userId = accessor.getUser().getName();
-                            // 현재 접속한 세션을 가져온다.
-                            String userSession = accessor.getSessionId();
-                            System.out.println("접속 해제 요청- [userId : " + userId + "] [sessionId : " + userSession + "]");
-                        } else {
-                            // accessor.getUser()가 null인 경우에 대한 처리
+                    if(accessor.getCommand() != null){
+                        // 사용자 접속 해제시 사용자 큐를 삭제한다.
+                        if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+                            if (accessor.getUser() != null) {
+                                // 현재 접속한 userCd
+                                String userId = accessor.getUser().getName();
+                                // 현재 접속한 세션을 가져온다.
+                                String userSession = accessor.getSessionId();
+                                System.out.println("접속 해제 요청- [userId : " + userId + "] [sessionId : " + userSession + "]");
+                            } else {
+                                // accessor.getUser()가 null인 경우에 대한 처리
+                            }
                         }
+                    }else{
+
                     }
+
                 }catch(Exception e){
                     e.printStackTrace();
                 }
