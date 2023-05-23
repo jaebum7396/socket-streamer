@@ -1,4 +1,8 @@
+cloud:
+  gateway:
+    uri: ${LOCAL_URL}
 spring:
-  redis:
-    host: ${REDIS_URI_LOCAL}
-    port: ${REDIS_PORT}
+  cloud:
+    service-registry:
+      auto-registration:
+        enabled: 'false'
