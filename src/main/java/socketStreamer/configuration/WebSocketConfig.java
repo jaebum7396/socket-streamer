@@ -60,10 +60,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registration.interceptors(new ChannelInterceptor() {
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
+                System.out.println("preSend : "+message.getHeaders());
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 ObjectMapper objectMapper = new ObjectMapper();
                 List<String> userSessions = null;
-                System.out.println("preSend : "+accessor.getCommand());
                 // 헤더에서 userId 가져온다.
                 List<String> AuthorizationArr = Optional
                         .ofNullable(accessor.getNativeHeader("Authorization"))
