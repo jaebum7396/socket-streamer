@@ -60,16 +60,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registration.interceptors(new ChannelInterceptor() {
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
+                System.out.println("preSend : "+message.getHeaders());
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 ObjectMapper objectMapper = new ObjectMapper();
                 List<String> userSessions = null;
-
                 // 헤더에서 userId 가져온다.
                 List<String> AuthorizationArr = Optional
                         .ofNullable(accessor.getNativeHeader("Authorization"))
                         .orElseGet(Collections::emptyList);
 
-                //System.out.println("AuthorizationArr : "+AuthorizationArr);
+                System.out.println("AuthorizationArr : "+AuthorizationArr);
                 try{
                     // 처음 접속 시도시 유저 데이터를 넣어준다.
                     if (StompCommand.CONNECT.equals(accessor.getCommand())&&AuthorizationArr.size()>0) {
@@ -87,14 +87,23 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         accessor.setUser(principal);
                     }
 
-                    // 사용자 접속 해제시 사용자 큐를 삭제한다.
-                    if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
-                        // 현재 접속한 userCd
-                        String userId = accessor.getUser().getName();
-                        // 현재 접속한 세션을 가져온다.
-                        String userSession = accessor.getSessionId();
-                        System.out.println("접속 해제 요청- [userId : "+ userId+"] [sessionId : "+userSession+"]");
+                    if(accessor.getCommand() != null){
+                        // 사용자 접속 해제시 사용자 큐를 삭제한다.
+                        if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
+                            if (accessor.getUser() != null) {
+                                // 현재 접속한 userCd
+                                String userId = accessor.getUser().getName();
+                                // 현재 접속한 세션을 가져온다.
+                                String userSession = accessor.getSessionId();
+                                System.out.println("접속 해제 요청- [userId : " + userId + "] [sessionId : " + userSession + "]");
+                            } else {
+                                // accessor.getUser()가 null인 경우에 대한 처리
+                            }
+                        }
+                    }else{
+
                     }
+
                 }catch(Exception e){
                     e.printStackTrace();
                 }
