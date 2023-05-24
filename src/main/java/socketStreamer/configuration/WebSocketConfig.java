@@ -73,7 +73,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 try{
                     // 처음 접속 시도시 유저 데이터를 넣어준다.
                     if (StompCommand.CONNECT.equals(accessor.getCommand())&&AuthorizationArr.size()>0) {
-                        // 현재 접속한 userCd
+                        // 현재 접속한 userId
                         String AuthorizationStr = AuthorizationArr.get(0);
                         Claims claim = getClaims(AuthorizationStr);
                         String userId = claim.getSubject();

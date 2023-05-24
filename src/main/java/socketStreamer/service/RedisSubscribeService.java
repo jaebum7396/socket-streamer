@@ -25,10 +25,10 @@ public class RedisSubscribeService implements MessageListener {
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
             // ChatMessage 객채로 맵핑
             Chat chat = objectMapper.readValue(publishMessage, Chat.class);
-            if(!"".equals(chat.getToUserCd())&&chat.getToUserCd()!=null&&!"null".equals(chat.getToUserCd())){
+            if(!"".equals(chat.getToUserId())&&chat.getToUserId()!=null&&!"null".equals(chat.getToUserId())){
                 // 사용자 특정하여 채팅 메시지 Send
                 System.out.println("directMessage : " + chat);
-                messagingTemplate.convertAndSendToUser(chat.getToUserCd(), "/direct/"+chat.getDomainCd(), chat);
+                messagingTemplate.convertAndSendToUser(chat.getToUserId(), "/direct/"+chat.getDomainCd(), chat);
                 //messagingTemplate.convertAndSend("/direct/user-pool", chat);
             }else{
                 // 해당 토픽의 구독자 모두에게 채팅 메시지 Send
