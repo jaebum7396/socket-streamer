@@ -24,6 +24,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
+	//dateTime format 처리를 위한 종속성
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
