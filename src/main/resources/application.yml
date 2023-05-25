@@ -8,6 +8,10 @@ eureka:
     service-url:
       defaultZone: ${DISCOVERY_URL}
 
+logging:
+  level:
+    root: debug
+
 spring:
   application:
     name: socket-streamer
