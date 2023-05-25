@@ -48,7 +48,10 @@ public class ChatController {
     }
 
     @MessageMapping("/enter")
-    public void enter(Chat chat) {
+    public void enter(Chat chat, @Header("Authorization") String token) {
+        Claims claims = getClaims(token);
+        String userCd = claims.get("userCd", String.class);
+        chat.setUserCd(userCd);
         System.out.println(chat);
         if (chat.getTransferType() == 1) {
             channelRepository.enterTopic(chat.getDomainCd());
