@@ -75,14 +75,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         // 현재 접속한 userId
                         String AuthorizationStr = AuthorizationArr.get(0);
                         Claims claim = getClaims(AuthorizationStr);
-                        String userId = claim.getSubject();
+                        String userCd = claim.get("userCd", String.class);
+
 
                         // 현재 접속한 세션을 가져온다.
                         String userSession = accessor.getSessionId();
-                        System.out.println("접속 요청 - [userId : "+ userId+"] [sessionId : "+userSession+"]");
+                        System.out.println("접속 요청 - [userId : "+ userCd+"] [sessionId : "+userSession+"]");
 
                         //principal 만들어준다 -- 해당 부분은 spring security를 사용하지 않을 경우이기 때문에 추후에 변경될 수 있음
-                        Principal principal = new MyUserPrincipal(String.valueOf(userId));
+                        Principal principal = new MyUserPrincipal(userCd);
                         accessor.setUser(principal);
                     }
 
@@ -91,10 +92,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         if (StompCommand.DISCONNECT.equals(accessor.getCommand())) {
                             if (accessor.getUser() != null) {
                                 // 현재 접속한 userCd
-                                String userId = accessor.getUser().getName();
+                                String userCd = accessor.getUser().getName();
                                 // 현재 접속한 세션을 가져온다.
                                 String userSession = accessor.getSessionId();
-                                System.out.println("접속 해제 요청- [userId : " + userId + "] [sessionId : " + userSession + "]");
+                                System.out.println("접속 해제 요청- [userCd : " + userCd + "] [sessionId : " + userSession + "]");
                             } else {
                                 // accessor.getUser()가 null인 경우에 대한 처리
                             }
