@@ -10,7 +10,7 @@ eureka:
 
 logging:
   level:
-    root: debug
+    root: warn
 
 spring:
   application:
