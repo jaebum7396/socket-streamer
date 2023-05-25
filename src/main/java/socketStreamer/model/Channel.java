@@ -1,5 +1,6 @@
 package socketStreamer.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import java.io.Serializable;
@@ -8,6 +9,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Channel implements Serializable {
     private static final long serialVersionUID = 6494678977089006639L;
     private String channelCd;
