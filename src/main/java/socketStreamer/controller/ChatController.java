@@ -37,7 +37,7 @@ public class ChatController {
 
     //websocket "/pub/message"로 들어오는 메시징을 처리한다.
     @MessageMapping("/message")
-    public void message(Chat chat, @Header("token") String token) {
+    public void message(Chat chat, @Header("Authorization") String token) {
         Claims claims = getClaims(token);
         String userCd = claims.get("userCd", String.class);
         chat.setUserCd(userCd);
