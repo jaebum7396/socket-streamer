@@ -1,6 +1,7 @@
 package socketStreamer.controller;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,10 +30,15 @@ public class ChatController {
     private String JWT_SECRET_KEY;
 
     public Claims getClaims(String jwt) {
-        Key secretKey = Keys.hmacShaKeyFor(JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-        Claims claim = Jwts.parserBuilder().setSigningKey(secretKey).build()
-                .parseClaimsJws(jwt).getBody();
-        return claim;
+        try{
+            Key secretKey = Keys.hmacShaKeyFor(JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+            Claims claim = Jwts.parserBuilder().setSigningKey(secretKey).build()
+                    .parseClaimsJws(jwt).getBody();
+            return claim;
+        } catch (
+        ExpiredJwtException e) {
+            throw new ExpiredJwtException(null, null, "로그인 시간이 만료되었습니다.");
+        }
     }
 
     //websocket "/pub/message"로 들어오는 메시징을 처리한다.
