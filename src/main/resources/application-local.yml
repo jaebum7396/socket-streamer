@@ -2,6 +2,8 @@ cloud:
   gateway:
     uri: ${LOCAL_URL}
 spring:
+  redis:
+    host: 'localhost'
   cloud:
     service-registry:
       auto-registration:

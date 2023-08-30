@@ -1,3 +1,6 @@
+spring:
+  redis:
+    host: ${REDIS_URI}
 cloud:
   gateway:
     uri: ${GATEWAY_URI}

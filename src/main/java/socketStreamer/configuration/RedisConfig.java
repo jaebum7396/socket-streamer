@@ -18,6 +18,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
     @Value("${spring.redis.host}")
     private String redisHost;
 
@@ -37,7 +40,10 @@ public class RedisConfig {
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
-        redisConfig.setPassword(RedisPassword.of(redisPassword));
+        System.out.println(activeProfile);
+        if(activeProfile.equals("deploy")){
+            redisConfig.setPassword(RedisPassword.of(redisPassword));
+        };
         return new LettuceConnectionFactory(redisConfig);
     }
     @Bean
