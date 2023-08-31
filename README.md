@@ -1,13 +1,12 @@
 # socket-streamer
 
 ### 설명 
-웹소켓서버
+독립적으로 기능하도록 구현한 웹소켓(STOMP)서버
 
 ### 구현 방법 
-Java11, Spring Boot2.7.8, redis, Gradle, STOMP  
-redis 활용하여 병렬 구성
-### 실행 방법
-
-
-### 구현 단위
-
+```
+JAVA, Spring Boot, 스프링 시큐리티, 스프링 클라우드, Jenkins, JPA, mysql, Gradle, Docker, redis
+```
+로컬 프로파일 일시에 -> 임베디드 레디스   
+운영 프로파일 일시에 -> 설정된 운영 레디스를 이용   
+병렬로 구성될 수 있도록 구현   
