@@ -43,8 +43,6 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<String> userSessions = null;
         // 헤더에서 userId 가져온다.
         List<String> AuthorizationArr = Optional
                 .ofNullable(accessor.getNativeHeader("Authorization"))
@@ -70,7 +68,7 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
                 Set<String> connectedUsers = getAllConnectedUsers();
                 System.out.println("Connected Users: " + connectedUsers);
 
-                //principal 만들어준다 -- 해당 부분은 spring security를 사용하지 않을 경우이기 때문에 추후에 변경될 수 있음
+                //principal 만들어준다
                 Principal principal = new MyUserPrincipal(userCd);
                 accessor.setUser(principal);
             }

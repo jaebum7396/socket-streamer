@@ -16,6 +16,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import static socketStreamer.configuration.JacksonConfig.objectMapper;
+
 @Configuration
 public class RedisConfig {
     @Value("${spring.profiles.active}")
@@ -29,13 +31,6 @@ public class RedisConfig {
 
     @Value("${spring.redis.password}")
     private String redisPassword;
-
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        return objectMapper;
-    }
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
