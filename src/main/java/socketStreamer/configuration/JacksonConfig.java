@@ -12,7 +12,7 @@ public class JacksonConfig {
     @Bean
     public static ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new Hibernate5Module());
+        //objectMapper.registerModule(new Hibernate5Module());
         objectMapper.registerModule(new JavaTimeModule()); // JSR-310 모듈 등록
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         //대소문자 구분
