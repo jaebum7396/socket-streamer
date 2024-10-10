@@ -43,18 +43,16 @@ public class ChatController {
 
     //websocket "/pub/message"로 들어오는 메시징을 처리한다.
     @MessageMapping("/message")
-    public void message(Chat chat, @Header("Authorization") String token) {
-        Claims claims = getClaims(token);
-        String userCd = claims.get("userCd", String.class);
+    public void message(Chat chat, @Header("connectionId") String userCd) {
         chat.setUserCd(userCd);
         System.out.println(chat);
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
         String destination = channelRepository.getTopic(chat.getDomainCd()).getTopic();
-        redisPublishService.publish(destination, chat);
+        redisPublishService.publish(destination, chat.toString());
     }
 
     @MessageMapping("/enter")
-    public void enter(Chat chat, @Header("Authorization") String token, @Header("connectionId") String userCd) {
+    public void enter(Chat chat, @Header("connectionId") String userCd) {
         //userCd = claims.get("userCd", String.class);
         chat.setUserCd(userCd);
         System.out.println(chat);
