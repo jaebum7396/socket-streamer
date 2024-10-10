@@ -24,7 +24,7 @@ public class RedisSubscribeService implements MessageListener {
             // redis에서 발행된 데이터를 받아 deserialize
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
             // ChatMessage 객채로 맵핑
-            Chat chat = objectMapper.readValue(publishMessage, Chat.class);
+            /*Chat chat = objectMapper.readValue(publishMessage, Chat.class);
             if(!"".equals(chat.getToUser())&&chat.getToUser()!=null&&!"null".equals(chat.getToUser())){
                 // 사용자 특정하여 채팅 메시지 Send
                 System.out.println("directMessage : " + chat);
@@ -36,6 +36,9 @@ public class RedisSubscribeService implements MessageListener {
                 messagingTemplate.convertAndSend("/sub/channel/"+chat.getDomainCd()+"/"+chat.getChannelCd(), chat);
             }
 
+            messagingTemplate.convertAndSend("/sub/channel/"+chat.getDomainCd()+"/"+chat.getChannelCd(), chat);
+            */
+            messagingTemplate.convertAndSend("signalBroadCast", publishMessage);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
