@@ -38,7 +38,7 @@ public class RedisSubscribeService implements MessageListener {
 
             messagingTemplate.convertAndSend("/sub/channel/"+chat.getDomainCd()+"/"+chat.getChannelCd(), chat);
             */
-            messagingTemplate.convertAndSend("signalBroadCast", publishMessage);
+            messagingTemplate.convertAndSend("/sub/channel/signalBroadCast", publishMessage);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
