@@ -54,9 +54,8 @@ public class ChatController {
     }
 
     @MessageMapping("/enter")
-    public void enter(Chat chat, @Header("Authorization") String token) {
-        Claims claims = getClaims(token);
-        String userCd = claims.get("userCd", String.class);
+    public void enter(Chat chat, @Header("Authorization") String token, @Header("connectionId") String userCd) {
+        //userCd = claims.get("userCd", String.class);
         chat.setUserCd(userCd);
         System.out.println(chat);
         if (chat.getTransferType() == 1) {
