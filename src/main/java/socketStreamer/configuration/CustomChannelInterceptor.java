@@ -43,19 +43,29 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-        // 헤더에서 userId 가져온다.
-        List<String> AuthorizationArr = Optional
-                .ofNullable(accessor.getNativeHeader("Authorization"))
-                .orElseGet(Collections::emptyList);
 
         //System.out.println("AuthorizationArr : "+AuthorizationArr);
         try{
             // 처음 접속 시도시 유저 데이터를 넣어준다.
-            if (StompCommand.CONNECT.equals(accessor.getCommand())&&AuthorizationArr.size()>0) {
-                // 현재 접속한 userId
-                String AuthorizationStr = AuthorizationArr.get(0);
-                Claims claim = getClaims(AuthorizationStr);
-                String userCd = claim.get("userCd", String.class);
+            if (StompCommand.CONNECT.equals(accessor.getCommand())
+                //&&AuthorizationArr.size()>0
+            ) {
+                // 헤더에서 userId 가져온다.
+                List<String> AuthorizationArr = Optional
+                        .ofNullable(accessor.getNativeHeader("Authorization"))
+                        .orElseGet(Collections::emptyList);
+                // 현재 접속한 userCd
+                String userCd = "";
+                if(AuthorizationArr.size() == 0){
+                    String AuthorizationStr = AuthorizationArr.get(0);
+                    Claims claim = getClaims(AuthorizationStr);
+                    userCd = claim.get("userCd", String.class);
+                } else {
+                    List<String> connectionIdArr = Optional
+                            .ofNullable(accessor.getNativeHeader("connectionId"))
+                            .orElseGet(Collections::emptyList);
+                    userCd = connectionIdArr.get(0);
+                }
 
                 // 현재 접속한 세션을 가져온다.
                 String userSession = accessor.getSessionId();
