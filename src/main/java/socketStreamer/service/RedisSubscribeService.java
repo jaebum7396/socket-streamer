@@ -19,26 +19,17 @@ public class RedisSubscribeService implements MessageListener {
     private final RedisTemplate redisTemplate;
     private final SimpMessageSendingOperations messagingTemplate;
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(Message envelope, byte[] pattern) {
         try {
-            // redis에서 발행된 데이터를 받아 deserialize
-            String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-            Envelope envelope = objectMapper.readValue(publishMessage, Envelope.class);
-            String topic = envelope.getTopic();
-            Object payload = envelope.getPayload();
-            String payloadString = objectMapper.writeValueAsString(payload);
-            /*if(!"".equals(chat.getToUser())&&chat.getToUser()!=null&&!"null".equals(chat.getToUser())){
-                // 사용자 특정하여 채팅 메시지 Send
-                System.out.println("directMessage : " + chat);
-                messagingTemplate.convertAndSendToUser(chat.getToUser(), "/direct/"+chat.getDomainCd(), chat);
-                //messagingTemplate.convertAndSend("/direct/user-pool", chat);
-            }else{
-                // 해당 토픽의 구독자 모두에게 채팅 메시지 Send
-                System.out.println("broadCasting : " + chat);
-                messagingTemplate.convertAndSend("/sub/channel/"+chat.getDomainCd()+"/"+chat.getChannelCd(), chat);
-            }
-            */
-            messagingTemplate.convertAndSend("/sub/channel/"+topic, payloadString);
+            String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(envelope.getBody());
+
+            // topic과 payload만 추출하기 위해 JsonNode로 파싱
+            JsonNode rootNode = objectMapper.readTree(publishMessage);
+            String topic = rootNode.get("topic").asText();
+            String payload = rootNode.get("payload").toString();  // payload는 JSON 문자열 그대로 유지
+
+            // topic과 payload 그대로 전송
+            messagingTemplate.convertAndSend("/sub/channel/" + topic, payload);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
