@@ -31,7 +31,9 @@ public class RedisSubscribeService implements MessageListener {
             // topic과 payload 그대로 전송
             messagingTemplate.convertAndSend("/sub/channel/" + topic, payload);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            // 에러의 전체 스택 트레이스 출력
+            log.error("Error processing message: ", e);
+            //log.error("Failed message content: {}", envelope);
         }
     }
 }
