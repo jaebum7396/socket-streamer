@@ -24,17 +24,15 @@ public class RedisSubscribeService implements MessageListener {
         try {
             String messageString = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
 
-            // JsonParser를 직접 사용하여 파싱
-            JsonParser parser = objectMapper.getFactory().createParser(messageString);
-            JsonNode rootNode = objectMapper.readTree(parser);
-
-            String topic = rootNode.get("topic").asText();
-            String payload = rootNode.get("payload").toString();
+            // JsonNode로 파싱
+            JsonNode jsonNode = objectMapper.readTree(messageString);
+            String topic = jsonNode.get("topic").asText();
+            String payload = jsonNode.get("payload").toString();
 
             messagingTemplate.convertAndSend("/sub/channel/" + topic, payload);
 
         } catch (Exception e) {
-            log.error("Failed to process message", e);
+            log.error("Error processing message: " + e.getMessage());
         }
     }
 }
