@@ -1,6 +1,5 @@
 package socketStreamer.service;
 
-import socketStreamer.model.Chat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;

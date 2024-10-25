@@ -6,7 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.Header;
-import socketStreamer.model.Chat;
+import socketStreamer.model.Envelope;
 import socketStreamer.repository.ChannelRepository;
 import socketStreamer.service.RedisPublishService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.security.Key;
 
 @RequiredArgsConstructor
 @RestController
-public class ChatController {
+public class SocketController {
 
     private final RedisPublishService redisPublishService;
     private final ChannelRepository channelRepository;
@@ -43,21 +43,17 @@ public class ChatController {
 
     //websocket "/pub/message"로 들어오는 메시징을 처리한다.
     @MessageMapping("/message")
-    public void message(Chat chat, @Header("connectionId") String userCd) {
-        chat.setUserCd(userCd);
-        System.out.println(chat);
+    public void message(Envelope envelope, @Header("connectionId") String userCd) {
+        System.out.println(envelope);
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
-        String destination = channelRepository.getTopic(chat.getDomainCd()).getTopic();
-        redisPublishService.publish(destination, chat.toString());
+        //String destination = channelRepository.getTopic(envelope.getTopic()).getTopic();
+        String destination = envelope.getTopic();
+        redisPublishService.publish(destination, envelope.toString());
     }
 
     @MessageMapping("/enter")
-    public void enter(Chat chat, @Header("connectionId") String userCd) {
-        //userCd = claims.get("userCd", String.class);
-        chat.setUserCd(userCd);
-        System.out.println(chat);
-        if (chat.getTransferType() == 1) {
-            channelRepository.enterTopic(chat.getDomainCd());
-        }
+    public void enter(Envelope envelope, @Header("connectionId") String userCd) {
+        System.out.println(envelope);
+        channelRepository.enterTopic(envelope.getTopic());
     }
 }

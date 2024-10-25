@@ -1,6 +1,5 @@
 package socketStreamer.service;
 
-import socketStreamer.model.Chat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +8,7 @@ import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
+import socketStreamer.model.Envelope;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,9 +23,10 @@ public class RedisSubscribeService implements MessageListener {
         try {
             // redis에서 발행된 데이터를 받아 deserialize
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-            // ChatMessage 객채로 맵핑
-            /*Chat chat = objectMapper.readValue(publishMessage, Chat.class);
-            if(!"".equals(chat.getToUser())&&chat.getToUser()!=null&&!"null".equals(chat.getToUser())){
+            Envelope envelope = objectMapper.readValue(publishMessage, Envelope.class);
+            String topic = envelope.getTopic();
+            String payload = envelope.getPayload();
+            /*if(!"".equals(chat.getToUser())&&chat.getToUser()!=null&&!"null".equals(chat.getToUser())){
                 // 사용자 특정하여 채팅 메시지 Send
                 System.out.println("directMessage : " + chat);
                 messagingTemplate.convertAndSendToUser(chat.getToUser(), "/direct/"+chat.getDomainCd(), chat);
@@ -38,7 +39,7 @@ public class RedisSubscribeService implements MessageListener {
 
             messagingTemplate.convertAndSend("/sub/channel/"+chat.getDomainCd()+"/"+chat.getChannelCd(), chat);
             */
-            messagingTemplate.convertAndSend("/sub/channel/signalBroadCast", publishMessage);
+            messagingTemplate.convertAndSend("/sub/channel/"+topic, payload);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
