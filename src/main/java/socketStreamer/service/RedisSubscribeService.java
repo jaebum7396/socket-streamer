@@ -1,5 +1,6 @@
 package socketStreamer.service;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -22,40 +23,18 @@ public class RedisSubscribeService implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         try {
             String messageString = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-            log.info("1. Redis에서 받은 원본 메시지: {}", messageString);
 
-            if (messageString == null) {
-                log.error("메시지가 null임");
-                return;
-            }
+            // JsonParser를 직접 사용하여 파싱
+            JsonParser parser = objectMapper.getFactory().createParser(messageString);
+            JsonNode rootNode = objectMapper.readTree(parser);
 
-            if (messageString.startsWith("\"") && messageString.endsWith("\"")) {
-                messageString = messageString.substring(1, messageString.length() - 1);
-                log.info("2. 큰따옴표 제거 후: {}", messageString);
-            }
+            String topic = rootNode.get("topic").asText();
+            String payload = rootNode.get("payload").toString();
 
-            log.info("3. Envelope로 변환 시도 전 messageString의 클래스: {}", messageString.getClass());
-            log.info("4. messageString의 처음 100자: {}", messageString.substring(0, Math.min(messageString.length(), 100)));
-
-            try {
-                Envelope envelope = objectMapper.readValue(messageString, Envelope.class);
-                log.info("5. Envelope 변환 성공");
-                String topic = envelope.getTopic();
-                Object payload = envelope.getPayload();
-
-                String payloadString = objectMapper.writeValueAsString(payload);
-                log.info("6. 변환된 payload: {}", payloadString);
-
-                messagingTemplate.convertAndSend("/sub/channel/" + topic, payloadString);
-                log.info("7. 메시지 전송 완료");
-
-            } catch (Exception e) {
-                log.error("JSON 파싱 실패", e);
-                log.error("실패한 문자열: {}", messageString);
-            }
+            messagingTemplate.convertAndSend("/sub/channel/" + topic, payload);
 
         } catch (Exception e) {
-            log.error("전체 프로세스 실패", e);
+            log.error("Failed to process message", e);
         }
     }
 }
