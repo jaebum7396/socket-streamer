@@ -26,6 +26,7 @@ public class RedisSubscribeService implements MessageListener {
             Envelope envelope = objectMapper.readValue(publishMessage, Envelope.class);
             String topic = envelope.getTopic();
             String payload = envelope.getPayload();
+            System.out.println("onMessage() : " + envelope);
             /*if(!"".equals(chat.getToUser())&&chat.getToUser()!=null&&!"null".equals(chat.getToUser())){
                 // 사용자 특정하여 채팅 메시지 Send
                 System.out.println("directMessage : " + chat);
