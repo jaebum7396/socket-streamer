@@ -25,7 +25,8 @@ public class RedisSubscribeService implements MessageListener {
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
             Envelope envelope = objectMapper.readValue(publishMessage, Envelope.class);
             String topic = envelope.getTopic();
-            JsonNode payload = envelope.getPayload();
+            Object payload = envelope.getPayload();
+            String payloadString = objectMapper.writeValueAsString(payload);
             /*if(!"".equals(chat.getToUser())&&chat.getToUser()!=null&&!"null".equals(chat.getToUser())){
                 // 사용자 특정하여 채팅 메시지 Send
                 System.out.println("directMessage : " + chat);
@@ -36,10 +37,8 @@ public class RedisSubscribeService implements MessageListener {
                 System.out.println("broadCasting : " + chat);
                 messagingTemplate.convertAndSend("/sub/channel/"+chat.getDomainCd()+"/"+chat.getChannelCd(), chat);
             }
-
-            messagingTemplate.convertAndSend("/sub/channel/"+chat.getDomainCd()+"/"+chat.getChannelCd(), chat);
             */
-            messagingTemplate.convertAndSend("/sub/channel/"+topic, payload);
+            messagingTemplate.convertAndSend("/sub/channel/"+topic, payloadString);
         } catch (Exception e) {
             log.error(e.getMessage());
         }

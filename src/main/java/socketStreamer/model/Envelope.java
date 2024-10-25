@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Envelope {
     private String topic;
-    private JsonNode payload;
+    private Object payload;
 }
