@@ -1,5 +1,6 @@
 package socketStreamer.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +23,9 @@ public class RedisSubscribeService implements MessageListener {
         try {
             // redis에서 발행된 데이터를 받아 deserialize
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-            System.out.println("onMessage() : " + publishMessage);
             Envelope envelope = objectMapper.readValue(publishMessage, Envelope.class);
-            System.out.println("envelope : " + envelope);
             String topic = envelope.getTopic();
-            String payload = envelope.getPayload();
+            JsonNode payload = envelope.getPayload();
             /*if(!"".equals(chat.getToUser())&&chat.getToUser()!=null&&!"null".equals(chat.getToUser())){
                 // 사용자 특정하여 채팅 메시지 Send
                 System.out.println("directMessage : " + chat);
