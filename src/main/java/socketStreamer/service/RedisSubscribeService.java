@@ -19,21 +19,40 @@ public class RedisSubscribeService implements MessageListener {
     private final RedisTemplate redisTemplate;
     private final SimpMessageSendingOperations messagingTemplate;
     @Override
-    public void onMessage(Message envelope, byte[] pattern) {
+    public void onMessage(Message envelopeMessage, byte[] pattern) {
         try {
-            String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(envelope.getBody());
+            // redis에서 발행된 데이터를 받아 deserialize
+            String envelopeString = (String) redisTemplate.getStringSerializer().deserialize(envelopeMessage.getBody());
 
-            // topic과 payload만 추출하기 위해 JsonNode로 파싱
-            JsonNode rootNode = objectMapper.readTree(publishMessage);
-            String topic = rootNode.get("topic").asText();
-            String payload = rootNode.get("payload").toString();  // payload는 JSON 문자열 그대로 유지
 
-            // topic과 payload 그대로 전송
-            messagingTemplate.convertAndSend("/sub/channel/" + topic, payload);
+            // 만약 publishMessage가 null이면 early return
+            if (envelopeString == null) {
+                log.error("Received null message");
+                return;
+            }
+            // 앞뒤 큰따옴표로 감싸져 있다면 제거
+            if (envelopeString.startsWith("\"") && envelopeString.endsWith("\"")) {
+                envelopeString = envelopeString.substring(1, envelopeString.length() - 1);
+            }
+
+            Envelope envelope = objectMapper.readValue(envelopeString, Envelope.class);
+            String topic = envelope.getTopic();
+            Object payload = envelope.getPayload();
+            String payloadString = objectMapper.writeValueAsString(payload);
+            /*if(!"".equals(chat.getToUser())&&chat.getToUser()!=null&&!"null".equals(chat.getToUser())){
+                // 사용자 특정하여 채팅 메시지 Send
+                System.out.println("directMessage : " + chat);
+                messagingTemplate.convertAndSendToUser(chat.getToUser(), "/direct/"+chat.getDomainCd(), chat);
+                //messagingTemplate.convertAndSend("/direct/user-pool", chat);
+            }else{
+                // 해당 토픽의 구독자 모두에게 채팅 메시지 Send
+                System.out.println("broadCasting : " + chat);
+                messagingTemplate.convertAndSend("/sub/channel/"+chat.getDomainCd()+"/"+chat.getChannelCd(), chat);
+            }
+            */
+            messagingTemplate.convertAndSend("/sub/channel/"+topic, payloadString);
         } catch (Exception e) {
-            // 에러의 전체 스택 트레이스 출력
-            log.error("Error processing message: ", e);
-            log.error("Failed message content: {}", envelope);
+            e.printStackTrace();
         }
     }
 }
