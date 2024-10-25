@@ -46,8 +46,8 @@ public class SocketController {
     public void message(Envelope envelope, @Header("connectionId") String userCd) {
         System.out.println(envelope);
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
-        //String destination = channelRepository.getTopic(envelope.getTopic()).getTopic();
-        String destination = envelope.getTopic();
+        String destination = channelRepository.getTopic(envelope.getTopic()).getTopic();
+        //String destination = envelope.getTopic();
         redisPublishService.publish(destination, envelope.toString());
     }
 
