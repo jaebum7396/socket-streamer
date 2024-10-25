@@ -33,7 +33,7 @@ public class RedisSubscribeService implements MessageListener {
         } catch (Exception e) {
             // 에러의 전체 스택 트레이스 출력
             log.error("Error processing message: ", e);
-            //log.error("Failed message content: {}", envelope);
+            log.error("Failed message content: {}", envelope);
         }
     }
 }
