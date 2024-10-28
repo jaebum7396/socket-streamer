@@ -65,13 +65,12 @@ public class ChannelRepository {
             topics.put(domainCd, topic);
         }
     }
-    public ChannelTopic getTopic(String domainCd) {
-        System.out.println("allTopics: " + topics);
-        System.out.println("domainCd: " + domainCd);
-        if(topics.get(domainCd) == null){
-            enterTopic(domainCd);
+    public ChannelTopic getTopic(String topic) {
+        log.info("allTopics: " + topics);
+        if(topics.get(topic) == null){
+            enterTopic(topic);
         }
-        log.info("getTopic: " + topics.get(domainCd).toString());
-        return topics.get(domainCd);
+        log.info("getTopic: " + topics.get(topic).toString());
+        return topics.get(topic);
     }
 }

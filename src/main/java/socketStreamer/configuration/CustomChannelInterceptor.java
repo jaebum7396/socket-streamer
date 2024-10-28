@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.Message;
@@ -21,6 +22,7 @@ import java.security.Key;
 import java.security.Principal;
 import java.util.*;
 
+@Slf4j
 public class CustomChannelInterceptor implements ChannelInterceptor {
 
     private final RedisTemplate<String, Object> redisTemplate;
@@ -69,14 +71,14 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
 
                 // 현재 접속한 세션을 가져온다.
                 String userSession = accessor.getSessionId();
-                System.out.println("접속 요청 - [userCd : "+ userCd+"] [sessionId : "+userSession+"]");
+                log.info("접속 요청 - [userCd : "+ userCd+"] [sessionId : "+userSession+"]");
 
                 // 레디스에 사용자와 세션 정보 저장
                 redisTemplate.opsForSet().add("userSessions:" + userCd, userSession);
 
                 // Retrieve connected users from Redis
                 Set<String> connectedUsers = getAllConnectedUsers();
-                System.out.println("Connected Users: " + connectedUsers);
+                log.info("Connected Users: " + connectedUsers);
 
                 //principal 만들어준다
                 Principal principal = new MyUserPrincipal(userCd);
@@ -91,14 +93,14 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
                         String userCd = accessor.getUser().getName();
                         // 현재 접속한 세션을 가져온다.
                         String userSession = accessor.getSessionId();
-                        System.out.println("접속 해제 요청- [userCd : " + userCd + "] [sessionId : " + userSession + "]");
+                        log.info("접속 해제 요청- [userCd : " + userCd + "] [sessionId : " + userSession + "]");
 
                         // 레디스에서 사용자와 세션 정보 제거
                         redisTemplate.opsForSet().remove("userSessions:" + userCd, userSession);
 
                         // Retrieve connected users from Redis
                         Set<String> connectedUsers = getAllConnectedUsers();
-                        System.out.println("Connected Users: " + connectedUsers);
+                        log.info("Connected Users: " + connectedUsers);
                     } else {
                         // accessor.getUser()가 null인 경우에 대한 처리
                     }

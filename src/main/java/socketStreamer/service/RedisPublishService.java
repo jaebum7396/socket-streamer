@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class RedisPublishService {
     private final RedisTemplate<String, Object> redisTemplate;
     public void publish(String topic, Object payload) {
-        System.out.println("payload : " + payload);
+        log.info("payload : " + payload);
         redisTemplate.convertAndSend(topic, payload);
     }
 }

@@ -43,7 +43,6 @@ public class SocketController {
 
     @MessageMapping("/message")
     public void message(Envelope envelope, @Header("connectionId") String userCd) {
-        System.out.println(envelope);
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
         String destination = channelRepository.getTopic(envelope.getTopic()).getTopic();
         //String destination = envelope.getTopic();
@@ -52,7 +51,6 @@ public class SocketController {
 
     @MessageMapping("/enter")
     public void enter(Envelope envelope, @Header("connectionId") String userCd) {
-        System.out.println(envelope);
         channelRepository.enterTopic(envelope.getTopic());
     }
 }
