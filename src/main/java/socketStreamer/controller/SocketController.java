@@ -41,14 +41,13 @@ public class SocketController {
         }
     }
 
-    //websocket "/pub/message"로 들어오는 메시징을 처리한다.
     @MessageMapping("/message")
     public void message(Envelope envelope, @Header("connectionId") String userCd) {
         System.out.println(envelope);
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
         String destination = channelRepository.getTopic(envelope.getTopic()).getTopic();
         //String destination = envelope.getTopic();
-        redisPublishService.publish(destination, envelope.getPayload().toString());
+        redisPublishService.publish(destination, envelope.getPayload());
     }
 
     @MessageMapping("/enter")
