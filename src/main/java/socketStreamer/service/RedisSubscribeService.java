@@ -21,7 +21,7 @@ public class RedisSubscribeService implements MessageListener {
     private final SimpMessageSendingOperations messagingTemplate;
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        log.info("메시지 수신");
+        log.info("메시지 수신 : {}", message);
         try {
             String messageString = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
 
